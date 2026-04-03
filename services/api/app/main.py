@@ -14,12 +14,26 @@ from services.api.app.routes.recommend import router as recommend_router
 from services.api.app.routes.search import router as search_router
 
 
+def _build_minimal_fallback_model() -> dict:
+	return {
+		"model_type": "bootstrap_minimal",
+		"created_at": "runtime-fallback",
+		"top_k": 0,
+		"ranking": [],
+	}
+
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
 	settings = get_settings()
 
 	app.state.elastic = ElasticDB(settings.elastic_uri, settings.elastic_index)
-	app.state.model = load_ranking_model(get_model_path())
+	model_path = get_model_path()
+	try:
+		app.state.model = load_ranking_model(model_path)
+	except FileNotFoundError:
+		logging.warning("Modele introuvable au demarrage (%s). Fallback minimal active.", model_path)
+		app.state.model = _build_minimal_fallback_model()
 	app.state.ranking_engine = build_ranking_engine(app.state.model)
 	app.state.search_cache = TTLCache(default_ttl=30)
 	app.state.recommend_cache = TTLCache(default_ttl=30)

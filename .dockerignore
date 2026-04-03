@@ -13,7 +13,8 @@ __pycache__/
 
 # Local data and heavy artifacts
 data/
-models/
+models/*
+!models/recommender.pkl
 notebooks/
 
 # OS/editor
