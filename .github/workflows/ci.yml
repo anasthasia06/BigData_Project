@@ -1,0 +1,44 @@
+name: CI BigData Project
+
+"on":
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  test-and-build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r services/api/requirements.txt
+          pip install -r services/frontend/requirements.txt
+          pip install pytest
+
+      - name: Run API tests
+        run: PYTHONPATH=. pytest tests/services_tests/api -q
+
+      - name: Run frontend tests
+        run: PYTHONPATH=. pytest tests/services_tests/frontend -q
+
+      - name: Run pipeline tests
+        run: PYTHONPATH=. pytest tests/pipelines_tests -q
+
+      - name: Build API image
+        if: github.event_name != 'pull_request'
+        run: docker build -f services/api/Dockerfile -t steam-api:ci .
+
+      - name: Build frontend image
+        if: github.event_name != 'pull_request'
+        run: docker build -f services/frontend/Dockerfile -t steam-frontend:ci .

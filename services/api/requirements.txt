@@ -4,3 +4,4 @@ pydantic
 elasticsearch
 pymongo
 httpx
+pandas
