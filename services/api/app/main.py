@@ -37,7 +37,11 @@ async def lifespan(app: FastAPI):
 		logging.warning("Modele introuvable au demarrage (%s). Fallback minimal active.", model_path)
 		app.state.model = _build_minimal_fallback_model()
 
-	if settings.search_backend == "sqlite_fts5":
+	if settings.search_backend == "whoosh":
+		from services.api.app.search.whoosh_search import WhooshSearchEngine
+
+		app.state.search_engine = WhooshSearchEngine(app.state.model)
+	elif settings.search_backend == "sqlite_fts5":
 		app.state.search_engine = SQLiteFTSSearchEngine(app.state.model)
 	else:
 		app.state.search_engine = app.state.elastic

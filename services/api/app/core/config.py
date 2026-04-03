@@ -7,7 +7,7 @@ from pathlib import Path
 class Settings:
 	api_host: str = os.getenv("API_HOST", "0.0.0.0")
 	api_port: int = int(os.getenv("API_PORT", "8000"))
-	search_backend: str = os.getenv("SEARCH_BACKEND", "sqlite_fts5")
+	search_backend: str = os.getenv("SEARCH_BACKEND", "whoosh")
 
 	elastic_uri: str = os.getenv("ELASTIC_URI", "http://localhost:9200")
 	elastic_index: str = os.getenv("ELASTIC_INDEX", "steam_games")
