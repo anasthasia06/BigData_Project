@@ -1,0 +1,68 @@
+# ─── Environnements virtuels ──────────────────────────────────────────────────
+.venv/
+.venv-ingestion/
+venv/
+env/
+.env
+
+# ─── Données (stockées dans /data/BigData_Project/) ───────────────────────────
+data/raw/
+data/processed/
+data/features/
+*.csv
+*.json
+*.zip
+*.parquet
+*.pkl
+*.joblib
+
+# ─── Modèles entraînés ────────────────────────────────────────────────────────
+models/
+*.pkl
+*.joblib
+*.h5
+*.pt
+*.pth
+
+# ─── Credentials & secrets ────────────────────────────────────────────────────
+.kaggle/
+kaggle.json
+*.env
+.env.*
+secrets/
+
+# ─── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+dist/
+build/
+*.egg-info/
+.eggs/
+
+# ─── Jupyter ──────────────────────────────────────────────────────────────────
+.ipynb_checkpoints/
+*.ipynb_checkpoints
+
+# ─── Logs & artefacts ─────────────────────────────────────────────────────────
+*.log
+logs/
+*.tmp
+*.bak
+
+# ─── Docker ───────────────────────────────────────────────────────────────────
+.docker/
+
+# ─── IDEs ─────────────────────────────────────────────────────────────────────
+.vscode/settings.json
+.idea/
+*.swp
+*~
+
+# ─── OS ───────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db

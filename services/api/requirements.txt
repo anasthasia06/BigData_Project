@@ -1,0 +1,6 @@
+fastapi
+uvicorn[standard]
+pydantic
+elasticsearch
+pymongo
+httpx
