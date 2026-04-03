@@ -1,9 +1,49 @@
-# BigData_Project
 
-recherche de resources :
+# 🎮 Steam Reco System (Low Latency + Search)
 
-https://www.kaggle.com/datasets/fronkongames/steam-games-dataset
+## Overview
+End-to-end recommendation system inspired by Steam.
 
-prompt chatgpt :
+Goal:
+- Serve recommendations < 100ms
+- Integrate search + ranking
+- Simulate production architecture
 
-https://chatgpt.com/share/6939978b-99b4-8011-adce-1b506de198c0
+## Architecture
+- MongoDB → storage
+- Elasticsearch → search
+- FastAPI → ranking API
+- Streamlit → frontend
+
+## Data Flow
+Kaggle → MongoDB → Feature pipeline → Elasticsearch → API → UI
+
+## Services
+
+### API (FastAPI)
+- /recommend → ranking
+- /search → Elasticsearch query
+
+### Frontend (Streamlit)
+- search interface
+- recommendations display
+
+## Tech Stack
+- Python
+- FastAPI
+- Streamlit
+- MongoDB
+- Elasticsearch
+- Docker
+- Render
+
+## Latency Strategy
+- precomputed features
+- in-memory model
+- minimal DB calls
+- optional cache
+
+## Run locally
+```bash
+docker-compose up
+
