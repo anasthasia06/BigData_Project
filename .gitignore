@@ -13,14 +13,13 @@ data/features/
 *.json
 *.zip
 *.parquet
-*.pkl
-*.joblib
 
 # ─── Modèles entraînés ────────────────────────────────────────────────────────
 models/
 !models/recommender.pkl
+
+# ─── Fichiers compressés & modèles ────────────────────────────────────────────
 *.pkl
-!recommender.pkl
 *.joblib
 *.h5
 *.pt

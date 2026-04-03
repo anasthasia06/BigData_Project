@@ -15,7 +15,7 @@ class Settings:
 	mongo_db: str = os.getenv("MONGO_DB", "steam_games")
 	mongo_coll: str = os.getenv("MONGO_COLL", "games")
 
-	model_path: str = os.getenv("MODEL_PATH", str(Path(__file__).resolve().parents[3] / "models" / "recommender.pkl"))
+	model_path: str = os.getenv("MODEL_PATH", str(Path(__file__).resolve().parents[4] / "models" / "recommender.pkl"))
 
 
 def get_settings() -> Settings:
