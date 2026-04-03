@@ -17,3 +17,17 @@ def test_ttl_cache_clear():
     cache.set("k", "v")
     cache.clear()
     assert cache.get("k") is None
+
+
+def test_ttl_cache_stats_and_get_or_set():
+    cache = TTLCache(default_ttl=5)
+
+    value = cache.get_or_set("a", lambda: 123)
+    assert value == 123
+
+    value2 = cache.get_or_set("a", lambda: 999)
+    assert value2 == 123
+
+    stats = cache.stats()
+    assert stats["hits"] >= 1
+    assert stats["misses"] >= 1
