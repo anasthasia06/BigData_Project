@@ -20,7 +20,16 @@ def download_steam_dataset():
 
         api = KaggleApi()
         api.authenticate()
-        os.makedirs(RAW_DATA_DIR, exist_ok=True)
+
+        try:
+            os.makedirs(RAW_DATA_DIR, exist_ok=True)
+        except OSError as exc:
+            logging.warning(
+                "Impossible de creer le repertoire cible %s (%s). Tentative de telechargement quand meme.",
+                RAW_DATA_DIR,
+                exc,
+            )
+
         logging.info(f"Téléchargement du dataset Kaggle complet : {KAGGLE_DATASET}")
         api.dataset_download_files(
             KAGGLE_DATASET,
