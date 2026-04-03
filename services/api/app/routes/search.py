@@ -136,8 +136,12 @@ def search_games(
 		if cached is not None:
 			return cached
 
+	search_engine = getattr(request.app.state, "search_engine", None)
+	if search_engine is None:
+		search_engine = request.app.state.elastic
+
 	try:
-		results = request.app.state.elastic.search_games(
+		results = search_engine.search_games(
 			query=q,
 			genres=genre_list,
 			min_positive_ratio=min_positive_ratio,
@@ -145,7 +149,7 @@ def search_games(
 			size=size,
 		)
 	except Exception as exc:
-		logging.warning("Elasticsearch indisponible sur /search (%s). Fallback local active.", exc)
+		logging.warning("Moteur de recherche indisponible sur /search (%s). Fallback model active.", exc)
 		results = _fallback_search_from_model(
 			model=getattr(request.app.state, "model", {}),
 			query=q,
