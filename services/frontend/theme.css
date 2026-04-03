@@ -1,0 +1,125 @@
+/* ===========================
+   VARIABLES CSS - THEME 2025
+=========================== */
+:root {
+    --color-1: #FFC600;
+    --color-2: #214B4D;
+    --color-3: #265B88;
+    --color-4: #327342;
+    --color-5: #543361;
+    --color-6: #AE2E4B;
+    --color-7: #FE9666;
+    --color-8: #A66999;
+    --color-9: #3599B8;
+    --color-10: #DFBFBF;
+    --color-11: #4AC5BB;
+    --color-12: #5F6B6D;
+    --color-13: #FB8281;
+    --color-14: #F4D25A;
+    --color-15: #7F898A;
+    --color-16: #A4DDEE;
+    --color-17: #FDAB89;
+    --color-18: #B687AC;
+    --color-19: #28738A;
+    --color-20: #A78F8F;
+    --color-21: #168980;
+    --color-22: #293537;
+    --color-23: #BB4A4A;
+    --color-24: #B59525;
+    --color-25: #475052;
+    --color-26: #6A9FB0;
+    --color-27: #BD7150;
+    --color-28: #7B4F71;
+    --color-29: #1B4D5C;
+    --color-30: #706060;
+    --color-31: #0F5C55;
+    --color-32: #1C2325;
+
+    --font-default: 'Segoe UI', sans-serif;
+    --font-title: 'Segoe UI', sans-serif;
+    --font-title-bold: 'Segoe UI Bold', sans-serif;
+
+    --font-size-title: 14px;
+    --sidebar-width: 250px;
+}
+
+html, body, [class*="css"] {
+    font-family: var(--font-default);
+}
+
+.main .block-container {
+    max-width: 1100px;
+    padding-top: 1.2rem;
+    background: linear-gradient(165deg, rgba(164,221,238,0.12), rgba(41,53,55,0.05));
+}
+
+.hero {
+    background: linear-gradient(120deg, var(--color-2), var(--color-3), var(--color-5));
+    color: white;
+    border-radius: 16px;
+    padding: 18px 22px;
+    margin-bottom: 14px;
+    border: 1px solid rgba(255,255,255,0.15);
+}
+
+.hero h1 {
+    margin: 0;
+    font-size: 1.7rem;
+    letter-spacing: 0.2px;
+}
+
+.hero p {
+    margin: 6px 0 0 0;
+    color: rgba(255,255,255,0.92);
+}
+
+.game-card {
+    border: 1px solid rgba(32, 75, 77, 0.22);
+    border-left: 6px solid var(--color-9);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-bottom: 10px;
+    background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(164,221,238,0.15));
+    box-shadow: 0 4px 16px rgba(0,0,0,0.05);
+}
+
+.game-card-title {
+    font-weight: 700;
+    color: var(--color-22);
+    font-size: 1.02rem;
+}
+
+.game-card-sub {
+    color: var(--color-25);
+    font-size: 0.85rem;
+    margin-top: 2px;
+}
+
+.game-card-genres {
+    margin-top: 6px;
+    color: var(--color-29);
+    font-size: 0.9rem;
+}
+
+.game-card-meta {
+    margin-top: 8px;
+    color: var(--color-6);
+    font-size: 0.88rem;
+    font-weight: 600;
+}
+
+.kpi-strip {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 8px;
+}
+
+.kpi-pill {
+    background: var(--color-14);
+    color: var(--color-22);
+    border-radius: 999px;
+    padding: 5px 10px;
+    font-size: 0.82rem;
+    font-weight: 700;
+}
