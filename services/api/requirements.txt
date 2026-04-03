@@ -5,3 +5,4 @@ elasticsearch
 pymongo
 httpx
 pandas
+duckdb
