@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Dict, List, Optional
 
 import pandas as pd
+import numpy as np
 
 from config import FEATURES_DATA_DIR, MODEL_PATH
 
@@ -53,6 +54,9 @@ def train_baseline_model(df: pd.DataFrame, top_k: int = 1000) -> Dict:
 
 	data["genres"] = data["genres"].apply(_parse_genres)
 	data["ranking_score"] = pd.to_numeric(data["ranking_score"], errors="coerce").fillna(0)
+	data["appid"] = pd.to_numeric(data["appid"], errors="coerce")
+	data = data[np.isfinite(data["appid"])]
+	data["appid"] = data["appid"].astype(int)
 
 	ranked = (
 		data.sort_values("ranking_score", ascending=False)

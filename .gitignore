@@ -18,7 +18,9 @@ data/features/
 
 # ─── Modèles entraînés ────────────────────────────────────────────────────────
 models/
+!models/recommender.pkl
 *.pkl
+!recommender.pkl
 *.joblib
 *.h5
 *.pt

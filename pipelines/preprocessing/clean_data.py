@@ -2,6 +2,7 @@ import logging
 from pathlib import Path
 
 import pandas as pd
+import numpy as np
 
 from config import CLEAN_CSV, GAMES_CSV, PROCESSED_DATA_DIR
 
@@ -56,9 +57,8 @@ def clean_games_dataframe(df: pd.DataFrame) -> pd.DataFrame:
 
 	if {"positive", "negative"}.issubset(cleaned.columns):
 		total_reviews = cleaned["positive"].fillna(0) + cleaned["negative"].fillna(0)
-		cleaned["positive_ratio"] = (
-			cleaned["positive"].fillna(0) / total_reviews.replace(0, pd.NA)
-		).round(4)
+		ratio = cleaned["positive"].fillna(0) / total_reviews.replace(0, np.nan)
+		cleaned["positive_ratio"] = ratio.fillna(0).round(4)
 
 	list_like_cols = ["genres", "categories", "tags"]
 	for col in list_like_cols:

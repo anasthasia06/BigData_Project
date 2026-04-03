@@ -1,4 +1,5 @@
 from contextlib import asynccontextmanager
+import logging
 from time import perf_counter
 
 from fastapi import FastAPI
