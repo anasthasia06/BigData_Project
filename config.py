@@ -8,7 +8,7 @@ from pathlib import Path
 # ─── Racines ──────────────────────────────────────────────────────────────────
 PROJECT_ROOT = Path(__file__).resolve().parent
 DATA_ROOT    = Path(os.getenv("DATA_ROOT", "/data/BigData_Project/data"))
-MODELS_ROOT  = Path(os.getenv("MODELS_ROOT", "/data/BigData_Project/models"))
+MODELS_ROOT  = Path(os.getenv("MODELS_ROOT", str(PROJECT_ROOT / "models")))
 
 # ─── Chemins données ──────────────────────────────────────────────────────────
 RAW_DATA_DIR       = DATA_ROOT / "raw"
