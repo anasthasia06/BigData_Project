@@ -14,16 +14,16 @@ data/features/
 *.zip
 *.parquet
 
-# ─── Modèles entraînés ────────────────────────────────────────────────────────
-models/
-!models/recommender.pkl
-
-# ─── Fichiers compressés & modèles ────────────────────────────────────────────
 *.pkl
 *.joblib
 *.h5
 *.pt
 *.pth
+
+# ─── Modèles entraînés ────────────────────────────────────────────────────────
+# Ignorer TOUT le contenu du dossier models/ SAUF recommender.pkl
+models/*
+!models/recommender.pkl
 
 # ─── Credentials & secrets ────────────────────────────────────────────────────
 .kaggle/
