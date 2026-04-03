@@ -1,0 +1,18 @@
+Env uv à la racine du projet :
+uv venv .venv
+source .venv/bin/activate
+
+Installation des dépendances par service/brique :
+uv pip install -r pipelines/ingestion/requirements.txt
+uv pip install -r services/api/requirements.txt
+uv pip install -r services/frontend/requirements.txt
+
+Ajoute chaque requirements.txt au fur et à mesure selon les besoins.
+
+Commandes étape feat/data-ingestion :
+PYTHONPATH=$(pwd) .venv/bin/python pipelines/ingestion/kaggle_ingest.py
+PYTHONPATH=$(pwd) .venv/bin/python pipelines/preprocessing/clean_data.py
+PYTHONPATH=$(pwd) .venv/bin/python pipelines/ingestion/mongo_insert.py
+
+Pipeline complet :
+bash scripts/run_pipeline.sh
