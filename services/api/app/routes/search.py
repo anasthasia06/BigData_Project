@@ -17,6 +17,13 @@ def search_games(
 	size: int = Query(default=10, ge=1, le=100),
 ):
 	genre_list = [g.strip() for g in genres.split(",")] if genres else None
+	cache_key = f"q={q}|genres={genre_list}|min_pr={min_positive_ratio}|max_p={max_price}|size={size}"
+	cache = getattr(request.app.state, "search_cache", None)
+
+	if cache is not None:
+		cached = cache.get(cache_key)
+		if cached is not None:
+			return cached
 
 	results = request.app.state.elastic.search_games(
 		query=q,
@@ -25,6 +32,9 @@ def search_games(
 		max_price=max_price,
 		size=size,
 	)
+	payload = {"total": len(results), "items": results}
+	if cache is not None:
+		cache.set(cache_key, payload)
 
-	return {"total": len(results), "items": results}
+	return payload
 
