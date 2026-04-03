@@ -113,3 +113,27 @@ PYTHONPATH=$(pwd) .venv/bin/python -m pytest \
 docker compose -f infra/docker-compose.yml up --build
 ```
 
+## Deployment
+
+### Docker
+- API image: services/api/Dockerfile
+- Frontend image: services/frontend/Dockerfile
+- Compose local: infra/docker-compose.yml
+
+### Render
+- Blueprint file: render.yaml
+- Configure env vars in Render dashboard after import
+- Validate API healthcheck on /
+
+### CI/CD
+- Workflow: .github/workflows/deploy.yml
+- On PR to main: tests
+- On push to main: tests + docker build + optional Render auto-deploy hooks
+
+Required GitHub Secrets for auto-deploy:
+- RENDER_API_DEPLOY_HOOK
+- RENDER_FRONTEND_DEPLOY_HOOK
+
+### Full procedure
+See docs/deployment.md
+

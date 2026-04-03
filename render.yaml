@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: steam-api
+    env: docker
+    dockerfilePath: services/api/Dockerfile
+    plan: free
+    healthCheckPath: /
+    autoDeploy: true
+    envVars:
+      - key: ELASTIC_URI
+        value: https://your-elasticsearch-host
+      - key: ELASTIC_INDEX
+        value: steam_games
+      - key: MODEL_PATH
+        value: /data/BigData_Project/models/recommender.pkl
+
+  - type: web
+    name: steam-frontend
+    env: docker
+    dockerfilePath: services/frontend/Dockerfile
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: API_URL
+        value: https://steam-api.onrender.com

@@ -1,0 +1,22 @@
+# Git
+.git
+.github
+
+# Python caches and envs
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.mypy_cache/
+.venv/
+.venv-ingestion/
+
+# Local data and heavy artifacts
+data/
+models/
+notebooks/
+
+# OS/editor
+.DS_Store
+.vscode/
+.idea/
