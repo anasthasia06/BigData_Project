@@ -1,3 +1,4 @@
 # Dépendances spécifiques à la pipeline d'ingestion
 kaggle
 pandas
+pymongo
