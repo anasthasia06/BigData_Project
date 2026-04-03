@@ -8,6 +8,72 @@ from services.api.app.schemas.response import SearchResponse
 router = APIRouter(prefix="", tags=["search"])
 
 
+def _to_int(value) -> Optional[int]:
+	try:
+		if value is None:
+			return None
+		return int(float(value))
+	except (TypeError, ValueError):
+		return None
+
+
+def _to_float(value) -> Optional[float]:
+	try:
+		if value is None:
+			return None
+		return float(value)
+	except (TypeError, ValueError):
+		return None
+
+
+def _normalize_search_items(
+	raw_items: List[Dict],
+	min_positive_ratio: Optional[float],
+	max_price: Optional[float],
+	size: int,
+) -> List[Dict]:
+	normalized: List[Dict] = []
+
+	for item in raw_items:
+		appid = _to_int(item.get("appid"))
+		if appid is None:
+			continue
+
+		name = str(item.get("name", "")).strip()
+		if not name:
+			continue
+
+		raw_genres = item.get("genres", [])
+		if isinstance(raw_genres, list):
+			genres = [str(g).strip() for g in raw_genres if str(g).strip()]
+		elif isinstance(raw_genres, str):
+			genres = [g.strip() for g in raw_genres.split(",") if g.strip()]
+		else:
+			genres = []
+
+		price = _to_float(item.get("price"))
+		positive_ratio = _to_float(item.get("positive_ratio"))
+		score = _to_float(item.get("score"))
+
+		if min_positive_ratio is not None and positive_ratio is not None and positive_ratio < float(min_positive_ratio):
+			continue
+		if max_price is not None and price is not None and price > float(max_price):
+			continue
+
+		normalized.append(
+			{
+				"appid": appid,
+				"name": name,
+				"genres": genres,
+				"price": price,
+				"positive_ratio": positive_ratio,
+				"score": score,
+			}
+		)
+
+	return normalized[:size]
+
+
 def _fallback_search_from_model(
 	model: Dict,
 	query: Optional[str],
@@ -82,6 +148,13 @@ def search_games(
 			genres=genre_list,
 			size=size,
 		)
+
+	results = _normalize_search_items(
+		raw_items=results,
+		min_positive_ratio=min_positive_ratio,
+		max_price=max_price,
+		size=size,
+	)
 	payload = {"total": len(results), "items": results}
 	if cache is not None:
 		cache.set(cache_key, payload)

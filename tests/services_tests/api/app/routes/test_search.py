@@ -89,3 +89,36 @@ def test_search_endpoint_fallback_when_elastic_fails(monkeypatch):
     data = response.json()
     assert data["total"] == 1
     assert data["items"][0]["appid"] == 10
+
+
+def test_search_endpoint_normalizes_invalid_elastic_rows(monkeypatch):
+    class _BadDataElastic:
+        def search_games(self, **kwargs):
+            return [
+                {"appid": "abc", "name": "Broken", "genres": ["Action"], "price": "10", "positive_ratio": "0.8", "score": "1"},
+                {"appid": "42", "name": "Good", "genres": "Action,RPG", "price": "19.99", "positive_ratio": "0.9", "score": "2.0"},
+            ]
+
+        def close(self):
+            return None
+
+    monkeypatch.setattr("services.api.app.main.ElasticDB", lambda *args, **kwargs: _BadDataElastic())
+    monkeypatch.setattr(
+        "services.api.app.main.load_ranking_model",
+        lambda *_args, **_kwargs: {"ranking": []},
+    )
+    from services.api.app.main import app
+    from services.api.app.core.cache import TTLCache
+
+    app.state.elastic = _BadDataElastic()
+    app.state.model = {"ranking": []}
+    app.state.search_cache = TTLCache(default_ttl=60)
+    app.state.recommend_cache = TTLCache(default_ttl=60)
+    app.state.endpoint_latency = {}
+
+    client = TestClient(app)
+    response = client.get("/search?q=action&size=10")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["total"] == 1
+    assert data["items"][0]["appid"] == 42
