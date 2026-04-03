@@ -1,0 +1,31 @@
+name: CI/CD
+
+on:
+	push:
+		branches: [main, Charly]
+	pull_request:
+		branches: [main, Charly]
+
+jobs:
+	build-and-test:
+		runs-on: ubuntu-latest
+		steps:
+			- name: Checkout code
+				uses: actions/checkout@v4
+
+			- name: Set up Python
+				uses: actions/setup-python@v5
+				with:
+					python-version: '3.11'
+
+			- name: Install uv
+				run: pip install uv
+
+			- name: Générer les dépendances (uv)
+				run: bash scripts/gen_deps.sh
+
+			- name: Build Docker images
+				run: bash scripts/build_all.sh
+
+			- name: Lint & tests
+				run: bash scripts/test_all.sh

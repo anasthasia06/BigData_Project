@@ -1,0 +1,51 @@
+version: '3.8'
+services:
+	api:
+		build: ../services/api
+		container_name: steam_api
+		ports:
+			- "8000:8000"
+		environment:
+			- MONGO_URI=mongodb://mongo:27017
+			- ELASTIC_URI=http://elasticsearch:9200
+		depends_on:
+			- mongo
+			- elasticsearch
+		restart: unless-stopped
+
+	frontend:
+		build: ../services/frontend
+		container_name: steam_frontend
+		ports:
+			- "8501:8501"
+		environment:
+			- API_URL=http://api:8000
+		depends_on:
+			- api
+		restart: unless-stopped
+
+	mongo:
+		image: mongo:6
+		container_name: mongo
+		ports:
+			- "27017:27017"
+		volumes:
+			- mongo_data:/data/db
+		restart: unless-stopped
+
+	elasticsearch:
+		image: docker.elastic.co/elasticsearch/elasticsearch:8.13.0
+		container_name: elasticsearch
+		environment:
+			- discovery.type=single-node
+			- xpack.security.enabled=false
+			- ES_JAVA_OPTS=-Xms512m -Xmx512m
+		ports:
+			- "9200:9200"
+		volumes:
+			- es_data:/usr/share/elasticsearch/data
+		restart: unless-stopped
+
+volumes:
+	mongo_data:
+	es_data:
