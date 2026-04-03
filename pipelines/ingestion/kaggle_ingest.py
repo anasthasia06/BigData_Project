@@ -1,7 +1,11 @@
 import os
 import logging
-from kaggle.api.kaggle_api_extended import KaggleApi
 from config import KAGGLE_DATASET, RAW_DATA_DIR
+
+try:
+    from kaggle.api.kaggle_api_extended import KaggleApi
+except ImportError:
+    KaggleApi = None
 
 logging.basicConfig(
     level=logging.INFO,
@@ -10,6 +14,10 @@ logging.basicConfig(
 
 def download_steam_dataset():
     try:
+        if KaggleApi is None:
+            logging.error("Le package 'kaggle' n'est pas installe dans cet environnement.")
+            return
+
         api = KaggleApi()
         api.authenticate()
         os.makedirs(RAW_DATA_DIR, exist_ok=True)
