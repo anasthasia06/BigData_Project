@@ -1,0 +1,11 @@
+apiVersion: 1
+
+providers:
+  - name: steam-search
+    orgId: 1
+    folder: Steam Search
+    type: file
+    disableDeletion: false
+    editable: true
+    options:
+      path: /var/lib/grafana/dashboards
