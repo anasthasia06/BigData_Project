@@ -1,4 +1,5 @@
 import logging
+import math
 from typing import Dict, List, Optional
 
 from fastapi import APIRouter, Query, Request
@@ -21,7 +22,10 @@ def _to_float(value) -> Optional[float]:
 	try:
 		if value is None:
 			return None
-		return float(value)
+		parsed = float(value)
+		if not math.isfinite(parsed):
+			return None
+		return parsed
 	except (TypeError, ValueError):
 		return None
 

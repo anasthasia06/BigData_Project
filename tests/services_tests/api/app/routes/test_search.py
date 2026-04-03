@@ -122,3 +122,45 @@ def test_search_endpoint_normalizes_invalid_elastic_rows(monkeypatch):
     data = response.json()
     assert data["total"] == 1
     assert data["items"][0]["appid"] == 42
+
+
+def test_search_endpoint_converts_nan_values_to_none(monkeypatch):
+    class _NanDataElastic:
+        def search_games(self, **kwargs):
+            return [
+                {
+                    "appid": 99,
+                    "name": "Action Infinite",
+                    "genres": ["Action"],
+                    "price": "nan",
+                    "positive_ratio": "inf",
+                    "score": "nan",
+                }
+            ]
+
+        def close(self):
+            return None
+
+    monkeypatch.setattr("services.api.app.main.ElasticDB", lambda *args, **kwargs: _NanDataElastic())
+    monkeypatch.setattr(
+        "services.api.app.main.load_ranking_model",
+        lambda *_args, **_kwargs: {"ranking": []},
+    )
+    from services.api.app.main import app
+    from services.api.app.core.cache import TTLCache
+
+    app.state.elastic = _NanDataElastic()
+    app.state.model = {"ranking": []}
+    app.state.search_cache = TTLCache(default_ttl=60)
+    app.state.recommend_cache = TTLCache(default_ttl=60)
+    app.state.endpoint_latency = {}
+
+    client = TestClient(app)
+    response = client.get("/search?q=action&size=10")
+    assert response.status_code == 200
+    data = response.json()
+    assert data["total"] == 1
+    assert data["items"][0]["appid"] == 99
+    assert data["items"][0]["price"] is None
+    assert data["items"][0]["positive_ratio"] is None
+    assert data["items"][0]["score"] is None
