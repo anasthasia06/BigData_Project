@@ -52,7 +52,12 @@ def train_baseline_model(df: pd.DataFrame, top_k: int = 1000) -> Dict:
 		if col not in data.columns:
 			raise ValueError(f"Colonne manquante: {col}")
 
-	data["genres"] = data["genres"].apply(_parse_genres)
+	# 'tags' contient les vrais genres Steam (Action, RPG, Shooter...).
+	# 'genres' contient les catégories Steam (Single-player, Multi-player...).
+	# On utilise tags comme genres pour la recherche/filtrage.
+	if "tags" in data.columns:
+		data["tags"] = data["tags"].apply(_parse_genres)
+	data["genres"] = data["tags"].apply(_parse_genres) if "tags" in data.columns else data["genres"].apply(_parse_genres)
 	data["ranking_score"] = pd.to_numeric(data["ranking_score"], errors="coerce").fillna(0)
 	data["appid"] = pd.to_numeric(data["appid"], errors="coerce")
 	data = data[np.isfinite(data["appid"])]
@@ -70,6 +75,8 @@ def train_baseline_model(df: pd.DataFrame, top_k: int = 1000) -> Dict:
 			"name": str(row["name"]),
 			"genres": row["genres"],
 			"ranking_score": float(row["ranking_score"]),
+			"price": float(row["price"]) if "price" in row and pd.notna(row["price"]) else None,
+			"positive_ratio": float(row["positive_ratio"]) if "positive_ratio" in row and pd.notna(row["positive_ratio"]) else None,
 		}
 		for _, row in ranked.iterrows()
 	]

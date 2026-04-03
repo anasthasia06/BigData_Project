@@ -63,6 +63,12 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
 		feat["genres"] = [[] for _ in range(len(feat))]
 
 	feat["genre_count"] = feat["genres"].apply(len)
+
+	if "tags" in feat.columns:
+		feat["tags"] = feat["tags"].apply(_parse_list_like)
+	else:
+		feat["tags"] = [[] for _ in range(len(feat))]
+
 	feat["recommendations_log"] = feat["recommendations"].clip(lower=0).apply(np.log1p)
 	feat["peak_ccu_log"] = feat["peak_ccu"].clip(lower=0).apply(np.log1p)
 
@@ -88,6 +94,7 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
 			"recommendations_log",
 			"peak_ccu_log",
 			"ranking_score",
+			"tags",
 		]
 		if col in feat.columns
 	]

@@ -50,12 +50,24 @@ class WhooshSearchEngine:
             except (TypeError, ValueError):
                 ranking_score = 0.0
 
+            price = item.get("price")
+            try:
+                price = float(price) if price is not None else None
+            except (TypeError, ValueError):
+                price = None
+
+            positive_ratio = item.get("positive_ratio")
+            try:
+                positive_ratio = float(positive_ratio) if positive_ratio is not None else None
+            except (TypeError, ValueError):
+                positive_ratio = None
+
             writer.update_document(
                 appid=str(appid),
                 name=name,
                 genres=genres,
-                price=None,
-                positive_ratio=None,
+                price=price,
+                positive_ratio=positive_ratio,
                 ranking_score=ranking_score,
             )
         writer.commit()

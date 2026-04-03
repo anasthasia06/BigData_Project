@@ -14,7 +14,7 @@ logging.basicConfig(
 
 def load_raw_data(input_path: Path) -> pd.DataFrame:
 	"""Charge le dataset brut CSV depuis le chemin donné."""
-	return pd.read_csv(input_path, low_memory=False)
+	return pd.read_csv(input_path, low_memory=False, index_col=False)
 
 
 def _to_snake_case(columns: pd.Index) -> pd.Index:
