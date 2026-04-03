@@ -5,3 +5,5 @@ elasticsearch
 pymongo
 httpx
 pandas
+whoosh
+prometheus_client
