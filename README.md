@@ -28,11 +28,48 @@ Done:
 - Step 3: MongoDB insertion pipeline
 - Step 4: documentation and runnable scripts
 
+## feat/elasticsearch Status
+Done:
+- Step 1: index creation script with settings/mapping
+- Step 2: cleaned games bulk indexing
+- Step 3: simple and advanced search smoke tests
+- Step 4: search endpoint documentation
+
 ## Data-Ingestion Scripts
 - Download raw dataset: `pipelines/ingestion/kaggle_ingest.py`
 - Clean CSV data: `pipelines/preprocessing/clean_data.py`
 - Insert cleaned data into MongoDB: `pipelines/ingestion/mongo_insert.py`
 - Orchestrator script: `scripts/run_pipeline.sh`
+
+## Elasticsearch Scripts
+- Build index + mapping + bulk indexing + smoke tests: `pipelines/indexing/elastic_index.py`
+
+Run Elasticsearch pipeline:
+```bash
+PYTHONPATH=$(pwd) .venv/bin/python pipelines/indexing/elastic_index.py
+```
+
+## Search Endpoints (API)
+Target endpoint for search integration in API branch:
+
+`GET /search`
+
+Query parameters (planned):
+- `q`: free-text query on game name/genres
+- `genres`: optional comma-separated genre filters
+- `min_positive_ratio`: optional float filter (>=)
+- `max_price`: optional float filter (<=)
+- `size`: max number of hits (default 10)
+
+Example simple search:
+```http
+GET /search?q=action&size=10
+```
+
+Example advanced search:
+```http
+GET /search?q=rpg&genres=RPG,Action&min_positive_ratio=0.7&max_price=30&size=20
+```
 
 ## Configuration
 Centralized in `config.py`.
@@ -63,6 +100,12 @@ PYTHONPATH=$(pwd) .venv/bin/python -m pytest \
 	tests/pipelines_tests/ingestion/test_kaggle_ingest.py \
 	tests/pipelines_tests/ingestion/test_mongo_insert.py \
 	tests/pipelines_tests/preprocessing/test_clean_data.py -v
+```
+
+## Run Tests (elasticsearch)
+```bash
+PYTHONPATH=$(pwd) .venv/bin/python -m pytest \
+  tests/pipelines_tests/indexing/test_elastic_index.py -v
 ```
 
 ## Run Full Stack Locally
