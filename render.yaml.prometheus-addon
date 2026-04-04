@@ -1,0 +1,70 @@
+# Render.yaml Updated Configuration
+# À copier/fusionner avec votre render.yaml existant
+
+services:
+  # Service API existant (À ADAPTER)
+  - type: web
+    name: steam-api
+    env: docker
+    dockerfilePath: services/api/Dockerfile
+    plan: free
+    healthCheckPath: /metrics  # Vérifier que les métriques sont accessibles
+    autoDeploy: true
+    envVars:
+      - key: ELASTIC_URI
+        value: https://your-elasticsearch-host
+      - key: ELASTIC_INDEX
+        value: steam_games
+      - key: MODEL_PATH
+        value: /data/BigData_Project/models/recommender.pkl
+
+  # Service Frontend existant
+  - type: web
+    name: steam-frontend
+    env: docker
+    dockerfilePath: services/frontend/Dockerfile
+    plan: free
+    autoDeploy: true
+    envVars:
+      - key: API_URL
+        value: https://steam-api.onrender.com
+
+  # ========== NOUVEAU SERVICE PROMETHEUS ==========
+  - type: background-worker
+    name: steam-prometheus
+    env: docker
+    dockerfilePath: infra/observability/Dockerfile.prometheus.render
+    plan: starter  # $10/mois minimum
+    autoDeploy: true
+    
+    # Configuration runtime
+    envVars:
+      # Si vous utilisez Grafana Cloud pour le remote write
+      - key: PROMETHEUS_REMOTE_WRITE_ENABLED
+        value: 'false'
+      
+      # Optionnel : Credentials Grafana Cloud (à remplir si remote write activé)
+      # - key: GRAFANA_USER_ID
+      #   value: YOUR_USER_ID
+      # - key: GRAFANA_API_TOKEN
+      #   value: YOUR_API_TOKEN
+      #   isSecret: true
+
+    # Health check Prometheus
+    healthCheckPath: /-/healthy
+
+# ========== VERSION MINIMALE SANS COÛT ==========
+# 
+# Si vous ne voulez **PAS payer** pour Prometheus sur Render :
+#
+# 1. Option : Grafana Cloud gratuit (sans stockage local)
+#    - Prometheus tourne en local
+#    - Metrics envoyées à Grafana Cloud
+#    - Coût : $0
+#
+# 2. Option : Monitoring basique local
+#    - Prometheus tourne en local uniquement
+#    - Pas de visualisation web en production
+#    - Coût : $0
+#
+# Voir docs/observability_render.md pour détails

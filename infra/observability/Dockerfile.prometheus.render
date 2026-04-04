@@ -1,0 +1,23 @@
+FROM prom/prometheus:v2.54.1
+
+WORKDIR /etc/prometheus
+
+# Configuration Prometheus pour production
+COPY infra/observability/prometheus/prometheus.yml ./prometheus.yml
+
+# Configuration des alertes (optionnel)
+RUN mkdir -p /etc/prometheus/rules && \
+    echo "" > /etc/prometheus/rules/alerts.yml
+
+EXPOSE 9090
+
+# Commande pour lancer avec params de production
+# Retention réduite pour épargner la RAM sur Render
+CMD [ \
+  "--config.file=/etc/prometheus/prometheus.yml", \
+  "--storage.tsdb.retention.time=7d", \
+  "--storage.tsdb.retention.size=512MB", \
+  "--web.console.libraries=/usr/share/prometheus/console_libraries", \
+  "--web.console.templates=/usr/share/prometheus/consoles", \
+  "--web.enable-lifecycle" \
+]

@@ -1,0 +1,41 @@
+global:
+  scrape_interval: 30s      # Moins fréquent qu'en local pour économiser les ressources
+  evaluation_interval: 30s
+  external_labels:
+    cluster: 'steam-prod'
+    environment: 'production'
+
+remote_write:
+  - url: https://prometheus-prod-55-prod-gb-south-1.grafana.net/api/prom/push
+    basic_auth:
+      username: "${GRAFANA_USER_ID}"
+      password: "${GRAFANA_API_TOKEN}"
+    write_relabel_configs:
+      - source_labels: [__name__]
+        regex: 'up|.*_total|.*_seconds|.*_bytes|.*_hits|.*_misses|.*_size'
+        action: keep
+
+scrape_configs:
+  # API - Endpoint HTTPS en production
+  - job_name: steam_api
+    metrics_path: /metrics
+    scheme: https
+    static_configs:
+      - targets: ['steam-api.onrender.com']
+    scrape_interval: 30s
+    scrape_timeout: 10s
+
+  # Frontend - Nécessite instrumentation Prometheus ajoutée
+  - job_name: steam_frontend
+    metrics_path: /metrics
+    scheme: https
+    static_configs:
+      - targets: ['steam-frontend.onrender.com']
+    scrape_interval: 60s  # Plus rare pour Streamlit
+    scrape_timeout: 10s
+
+  # Prometheus lui-même
+  - job_name: prometheus
+    static_configs:
+      - targets: ['localhost:9090']
+    scrape_interval: 15s

@@ -174,7 +174,7 @@ def metrics_json(request: Request):
 	}
 
 
-@app.get("/metrics")
+@app.api_route("/metrics", methods=["GET", "HEAD"])
 def metrics(request: Request):
 	_update_runtime_metrics(request)
 	return Response(content=generate_latest(), media_type=CONTENT_TYPE_LATEST)

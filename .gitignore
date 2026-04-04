@@ -66,3 +66,7 @@ logs/
 # ─── OS ───────────────────────────────────────────────────────────────────────
 .DS_Store
 Thumbs.db
+
+# ─── Observability secrets ────────────────────────────────────────────────────
+infra/observability/.env
+infra/observability/prometheus/prometheus.yml
