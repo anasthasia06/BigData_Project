@@ -4,7 +4,7 @@ import os
 from time import perf_counter
 
 from fastapi import FastAPI
-from prometheus_client import CONTENT_TYPE_LATEST, Counter, Gauge, Histogram, generate_latest
+from prometheus_client import Counter, Gauge, Histogram, generate_latest
 from starlette.requests import Request
 from starlette.responses import Response
 
@@ -177,7 +177,8 @@ def metrics_json(request: Request):
 @app.api_route("/metrics", methods=["GET", "HEAD"])
 def metrics(request: Request):
 	_update_runtime_metrics(request)
-	return Response(content=generate_latest(), media_type=CONTENT_TYPE_LATEST)
+	# Keep explicit Prometheus exposition format expected by most remote scrapers.
+	return Response(content=generate_latest(), media_type="text/plain; version=0.0.4; charset=utf-8")
 
 
 app.include_router(search_router)
