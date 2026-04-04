@@ -13,6 +13,13 @@ services:
         value: steam_games
       - key: MODEL_PATH
         value: /data/BigData_Project/models/recommender.pkl
+      # Metrics Endpoint auth for Grafana Cloud (required by Metrics Endpoint integration)
+      - key: METRICS_AUTH_MODE
+        value: basic
+      - key: METRICS_BASIC_USERNAME
+        value: grafana-scraper
+      - key: METRICS_BASIC_PASSWORD
+        sync: false
 
   - type: web
     name: steam-frontend

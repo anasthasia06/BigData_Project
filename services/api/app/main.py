@@ -1,6 +1,8 @@
 from contextlib import asynccontextmanager
+import base64
 import logging
 import os
+from secrets import compare_digest
 from time import perf_counter
 
 from fastapi import FastAPI
@@ -66,6 +68,47 @@ def _update_runtime_metrics(request: Request) -> None:
 		RECOMMEND_CACHE_MISSES.set(stats.get("misses", 0))
 
 	MEMORY_RSS_BYTES.set(_read_rss_bytes())
+
+
+def _metrics_auth_error(mode: str) -> Response:
+	headers = {}
+	if mode == "basic":
+		headers["WWW-Authenticate"] = 'Basic realm="metrics"'
+	elif mode == "bearer":
+		headers["WWW-Authenticate"] = "Bearer"
+	return Response(content="Unauthorized", status_code=401, headers=headers)
+
+
+def _is_metrics_authorized(request: Request) -> bool:
+	mode = os.getenv("METRICS_AUTH_MODE", "none").strip().lower()
+	if mode in {"", "none"}:
+		return True
+
+	auth_header = request.headers.get("authorization", "")
+	if mode == "basic":
+		expected_user = os.getenv("METRICS_BASIC_USERNAME", "")
+		expected_password = os.getenv("METRICS_BASIC_PASSWORD", "")
+		if not expected_user or not expected_password:
+			return False
+		if not auth_header.startswith("Basic "):
+			return False
+		try:
+			decoded = base64.b64decode(auth_header.split(" ", 1)[1]).decode("utf-8")
+			provided_user, provided_password = decoded.split(":", 1)
+		except Exception:
+			return False
+		return compare_digest(provided_user, expected_user) and compare_digest(provided_password, expected_password)
+
+	if mode == "bearer":
+		expected_token = os.getenv("METRICS_BEARER_TOKEN", "")
+		if not expected_token:
+			return False
+		if not auth_header.startswith("Bearer "):
+			return False
+		provided_token = auth_header.split(" ", 1)[1]
+		return compare_digest(provided_token, expected_token)
+
+	return False
 
 
 def _build_minimal_fallback_model() -> dict:
@@ -176,6 +219,9 @@ def metrics_json(request: Request):
 
 @app.api_route("/metrics", methods=["GET", "HEAD"])
 def metrics(request: Request):
+	mode = os.getenv("METRICS_AUTH_MODE", "none").strip().lower()
+	if not _is_metrics_authorized(request):
+		return _metrics_auth_error(mode)
 	_update_runtime_metrics(request)
 	# Keep explicit Prometheus exposition format expected by most remote scrapers.
 	return Response(content=generate_latest(), media_type="text/plain; version=0.0.4; charset=utf-8")
