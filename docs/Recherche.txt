@@ -7,3 +7,7 @@ https://www.kaggle.com/datasets/fronkongames/steam-games-dataset
 prompt chatgpt :
 
 https://chatgpt.com/share/6939978b-99b4-8011-adce-1b506de198c0
+
+
+Steam reproduit pour une lecture : 
+https://chatgpt.com/c/69cf6baa-d3d4-832a-a422-6a4c2af96c07
